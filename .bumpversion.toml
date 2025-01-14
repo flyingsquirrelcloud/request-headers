@@ -7,7 +7,7 @@ parse = """(?x)
     (?:
         -                             # dash separator for pre-release section
         (?P<pre_l>[a-zA-Z-]+)         # pre-release label
-        (?P<distance>\\d+)            # pre-release version number
+        (?P<distance>\\d+)            # numeric distance value
     )?                                # pre-release section is optional
 """
 
@@ -35,5 +35,8 @@ post_commit_hooks = []
 [tool.bumpversion.parts.pre_l]
 values = ["dev"]
 optional_value = "dev"
+bumpable = false  # Ensure pre_l cannot be bumped
 
 [tool.bumpversion.parts.distance]
+type = "numeric"  # Define distance as a numeric part
+optional_value = "0"  # Start at 0 if not explicitly set
