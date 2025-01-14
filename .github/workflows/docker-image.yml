@@ -56,7 +56,7 @@ jobs:
         if [[ "${{ github.ref_name }}" == "main" ]]; then
           echo "BUMP_TYPE=pre_l" >> $GITHUB_ENV
         else
-          echo "BUMP_TYPE=patch" >> $GITHUB_ENV
+          echo "BUMP_TYPE=pre_l" >> $GITHUB_ENV
         fi
 
     - name: Bump version
