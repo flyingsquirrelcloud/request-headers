@@ -1,0 +1,63 @@
+<!-- templates/debug.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request Debug Info</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #f8f9fa;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .json {
+            white-space: pre-wrap;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 3px;
+            border: 1px solid #e9ecef;
+            overflow-x: auto;
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        .timestamp {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .method {
+            font-weight: bold;
+            color: #28a745;
+        }
+        .path {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Request Debug Information</h1>
+    <p class="timestamp">Generated at: {{ request_info.timestamp }}</p>
+
+    <div class="section">
+        <h2>Current Path: <span class="path">{{ path if path else 'root (/)' }}</span></h2>
+        <p><span class="method">{{ request_info.method }}</span> {{ request_info.full_path }}</p>
+    </div>
+
+    <div class="section">
+        <h2>Request Details</h2>
+        <div class="json">{{ request_info | tojson(indent=2) }}</div>
+    </div>
+</body>
+</html>
