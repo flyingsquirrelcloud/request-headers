@@ -18,7 +18,6 @@ def get_request_info(req):
         "form": dict(req.form),
         "headers": headers,
         "cookies": dict(req.cookies),
-        "data": req.get_data(as_text=True),
         "remote_addr": req.remote_addr,
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "endpoint": req.endpoint,
@@ -32,17 +31,22 @@ def get_request_info(req):
         "user_agent": str(req.user_agent)
     }
 
-    # Remove keys with None values to avoid serialization issues
+    # Remove keys with None values
     request_info = {k: v for k, v in request_info.items() if v is not None}
 
+    # Handle JSON body
     if req.is_json and req.data:
         try:
             request_info["json"] = req.get_json()
         except Exception as e:
             request_info["json_error"] = str(e)
-    else:
-        request_info["json_error"] = "Empty request body or invalid JSON"
-        request_info["raw_data"] = req.data
+
+    # Convert raw data from bytes to string
+    if req.data:
+        try:
+            request_info["raw_data"] = req.get_data(as_text=True)  # Fix: Convert bytes to string
+        except Exception as e:
+            request_info["data_error"] = str(e)
 
     return request_info
 
