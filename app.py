@@ -35,16 +35,19 @@ def get_request_info(req):
     # Remove keys with None values to avoid serialization issues
     request_info = {k: v for k, v in request_info.items() if v is not None}
 
-    if req.is_json:
+    if req.is_json and req.data:
         try:
             request_info["json"] = req.get_json()
         except Exception as e:
             request_info["json_error"] = str(e)
+    else:
+        request_info["json_error"] = "Empty request body or invalid JSON"
+        request_info["raw_data"] = req.data
 
     return request_info
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
+@app.route('/', defaults={'path': ''}, methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'])
+@app.route('/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'])
 def catch_all(path):
     request_info = get_request_info(request)
     return render_template('debug.html',
