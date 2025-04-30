@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request
 from datetime import datetime
 import json
+import logging
 
 app = Flask(__name__)
+
+# Configure logging to stdout
+logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(levelname)s in %(module)s: %(message)s')
 
 def get_request_info(req):
     headers = dict(req.headers)
@@ -44,7 +48,7 @@ def get_request_info(req):
     # Convert raw data from bytes to string
     if req.data:
         try:
-            request_info["raw_data"] = req.get_data(as_text=True)  # Fix: Convert bytes to string
+            request_info["raw_data"] = req.get_data(as_text=True)
         except Exception as e:
             request_info["data_error"] = str(e)
 
@@ -54,6 +58,10 @@ def get_request_info(req):
 @app.route('/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'])
 def catch_all(path):
     request_info = get_request_info(request)
+
+    # Log to stdout
+    logging.info("Inbound request:\n%s", json.dumps(request_info, indent=2))
+
     return render_template('debug.html',
                            path=path,
                            request_info=request_info)
